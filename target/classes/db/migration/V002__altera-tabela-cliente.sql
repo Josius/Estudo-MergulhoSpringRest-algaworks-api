@@ -1,0 +1,1 @@
+alter table cliente alter column nome set not null;
