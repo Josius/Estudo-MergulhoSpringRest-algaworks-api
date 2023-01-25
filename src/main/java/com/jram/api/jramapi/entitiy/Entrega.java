@@ -1,11 +1,10 @@
 package com.jram.api.jramapi.entitiy;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 import com.jram.api.jramapi.validationgroups.ValidationGroups;
 
 import jakarta.persistence.Embedded;
@@ -54,9 +53,9 @@ public class Entrega {
     private StatusEntrega status;
     
     @JsonProperty(access = Access.READ_ONLY)
-    private LocalDateTime dataPedido;
+    private OffsetDateTime dataPedido;
     
     @JsonProperty(access = Access.READ_ONLY)
-    private LocalDateTime dataFinalizacao;
+    private OffsetDateTime dataFinalizacao;
 
 }

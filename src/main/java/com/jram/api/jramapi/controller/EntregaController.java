@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jram.api.jramapi.DTOs.DestinatarioDTO;
+import com.jram.api.jramapi.DTOs.EntregaDTO;
 import com.jram.api.jramapi.entitiy.Entrega;
 import com.jram.api.jramapi.repository.EntregaRepository;
 import com.jram.api.jramapi.service.EntregaService;
@@ -41,10 +43,26 @@ public class EntregaController {
     }
 
     @GetMapping("/{entregaId}")
-    public ResponseEntity<Entrega> buscar(@PathVariable Long entregaId){
+    public ResponseEntity<EntregaDTO> buscar(@PathVariable Long entregaId){
 
         return entregaRepository.findById(entregaId)
-                .map(ResponseEntity::ok)
+                .map(entrega -> {
+                    EntregaDTO entregaDTO = new EntregaDTO();
+                    entregaDTO.setId(entrega.getId());
+                    entregaDTO.setNomeCliente(entrega.getCliente().getNome());
+                    entregaDTO.setDestinatarioDTO(new DestinatarioDTO());
+                    entregaDTO.getDestinatarioDTO().setNome(entrega.getDestinatario().getNome());
+                    entregaDTO.getDestinatarioDTO().setLogradouro(entrega.getDestinatario().getLogradouro());
+                    entregaDTO.getDestinatarioDTO().setNumero(entrega.getDestinatario().getNumero());
+                    entregaDTO.getDestinatarioDTO().setComplemento(entrega.getDestinatario().getComplemento());
+                    entregaDTO.getDestinatarioDTO().setBairro(entrega.getDestinatario().getBairro());
+                    entregaDTO.setTaxa(entrega.getTaxa());
+                    entregaDTO.setStatusEntrega(entrega.getStatus());
+                    entregaDTO.setDataPedido(entrega.getDataPedido());
+                    entregaDTO.setDataFinalizacao(entrega.getDataFinalizacao());
+
+                    return ResponseEntity.ok(entregaDTO);
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 }

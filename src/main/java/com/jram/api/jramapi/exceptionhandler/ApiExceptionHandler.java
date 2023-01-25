@@ -1,6 +1,6 @@
 package com.jram.api.jramapi.exceptionhandler;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +44,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
         }
         ClienteException clienteException = new ClienteException();
         clienteException.setStatus(status.value());
-        clienteException.setDataHora(LocalDateTime.now());
+        clienteException.setDataHora(OffsetDateTime.now());
         clienteException.setTitulo("Um ou mais campos estão inválidos! Faça o preenchimento correto, e tente novamente.");
         clienteException.setCampos(campos);
         
@@ -58,7 +58,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 
         ClienteException clienteException = new ClienteException();
         clienteException.setStatus(status.value());
-        clienteException.setDataHora(LocalDateTime.now());
+        clienteException.setDataHora(OffsetDateTime.now());
         clienteException.setTitulo(negocioException.getMessage());
         
         return handleExceptionInternal(negocioException, clienteException, new HttpHeaders(), status, request);
