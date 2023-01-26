@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.jram.api.jramapi.exception.NegocioException;
 import com.jram.api.jramapi.validationgroups.ValidationGroups;
 
 import jakarta.persistence.CascadeType;
@@ -75,6 +76,25 @@ public class Entrega {
         this.getOcorrencias().add(ocorrencia);
 
         return ocorrencia;
+    }
+
+    public void finalizar() {
+
+        if(naoPodeSerFinalizada()){
+            throw new NegocioException("Entrega não pode ser finalizada.");
+        }
+        setStatus(StatusEntrega.FINALIZADA);
+        setDataFinalizacao(OffsetDateTime.now());
+    }
+
+    public boolean podeSerFinalizada(){
+
+        return StatusEntrega.PENDENTE.equals(getStatus());
+    }
+
+    public boolean naoPodeSerFinalizada(){
+
+        return !podeSerFinalizada();
     }
 
 }
