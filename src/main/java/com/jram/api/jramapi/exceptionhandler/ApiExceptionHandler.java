@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.jram.api.jramapi.exception.EntidadeNaoEncontradaException;
 import com.jram.api.jramapi.exception.NegocioException;
 
 import lombok.AllArgsConstructor;
@@ -62,6 +63,19 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
         clienteException.setTitulo(negocioException.getMessage());
         
         return handleExceptionInternal(negocioException, clienteException, new HttpHeaders(), status, request);
+    }
+    
+    @ExceptionHandler(EntidadeNaoEncontradaException.class)
+    public ResponseEntity<Object> handleEntidadeNaoEncontradaException(EntidadeNaoEncontradaException EntidadeNaoEncontradaException, WebRequest request){
+
+        HttpStatus status =  HttpStatus.NOT_FOUND;
+
+        ClienteException clienteException = new ClienteException();
+        clienteException.setStatus(status.value());
+        clienteException.setDataHora(OffsetDateTime.now());
+        clienteException.setTitulo(EntidadeNaoEncontradaException.getMessage());
+        
+        return handleExceptionInternal(EntidadeNaoEncontradaException, clienteException, new HttpHeaders(), status, request);
     }
 
 }
