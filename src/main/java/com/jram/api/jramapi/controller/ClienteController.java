@@ -30,69 +30,69 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @RequestMapping("/clientes")
 public class ClienteController {
-    
-    // @Autowired
-    private ClienteRepository clienteRepository;
+	
+	// @Autowired
+	private ClienteRepository clienteRepository;
 
-    private ClienteService clienteService;
+	private ClienteService clienteService;
 
-    
-    // public ClienteController(ClienteRepository clienteRepository) {
-    //     this.clienteRepository = clienteRepository;
-    // }
+	
+	// public ClienteController(ClienteRepository clienteRepository) {
+	//     this.clienteRepository = clienteRepository;
+	// }
 
 
-    @GetMapping
-    public List<Cliente> listar(){
-        
-        return clienteService.buscarTodosOsClientes();
-        // return clienteRepository.findByNomeContaining("o");
-    }
+	@GetMapping
+	public List<Cliente> listar(){
+		
+		return clienteService.buscarTodosOsClientes();
+		// return clienteRepository.findByNomeContaining("o");
+	}
+	
+	@GetMapping("/{clienteId}")
+	public ResponseEntity<Cliente> buscar(@PathVariable Long clienteId){
+		
+		return clienteService.buscarUmClientePorId(clienteId)
+				// .map(cliente -> ResponseEntity.ok(cliente))
+				.map(ResponseEntity::ok)
+				.orElse(ResponseEntity.notFound().build());
 
-    @GetMapping("/{clienteId}")
-    public ResponseEntity<Cliente> buscar(@PathVariable Long clienteId){
-        
-        return clienteService.buscarUmClientePorId(clienteId)
-                // .map(cliente -> ResponseEntity.ok(cliente))
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+		// Optional<Cliente> cliente =  clienteRepository.findById(clienteId);
 
-        // Optional<Cliente> cliente =  clienteRepository.findById(clienteId);
+		// if(cliente.isPresent()){
+		//     return ResponseEntity.ok(cliente.get());
+		// }
+		// return ResponseEntity.notFound().build();
+	}
 
-        // if(cliente.isPresent()){
-        //     return ResponseEntity.ok(cliente.get());
-        // }
-        // return ResponseEntity.notFound().build();
-    }
+	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
+	public Cliente adicionar(@Valid @RequestBody Cliente cliente){
+		return clienteService.salvar(cliente);
+	}
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Cliente adicionar(@Valid @RequestBody Cliente cliente){
-        return clienteService.salvar(cliente);
-    }
+	@PutMapping("/{clienteId}")
+	public ResponseEntity<Cliente> atualizar(@Valid @PathVariable Long clienteId, @RequestBody Cliente cliente){
+		
+		if(!clienteRepository.existsById(clienteId)){
+			return ResponseEntity.notFound().build();
+		}
+		
+		cliente.setId(clienteId);
+		cliente = clienteService.salvar(cliente);
 
-    @PutMapping("/{clienteId}")
-    public ResponseEntity<Cliente> atualizar(@Valid @PathVariable Long clienteId, @RequestBody Cliente cliente){
-        
-        if(!clienteRepository.existsById(clienteId)){
-            return ResponseEntity.notFound().build();
-        }
-        
-        cliente.setId(clienteId);
-        cliente = clienteService.salvar(cliente);
+		return ResponseEntity.ok(cliente);
+	}
 
-        return ResponseEntity.ok(cliente);
-    }
+	@DeleteMapping("/{clienteId}")
+	public ResponseEntity<Void> remover(@PathVariable Long clienteId){
 
-    @DeleteMapping("/{clienteId}")
-    public ResponseEntity<Void> remover(@PathVariable Long clienteId){
+		if(!clienteRepository.existsById(clienteId)){
+			return ResponseEntity.notFound().build();
+		}
 
-        if(!clienteRepository.existsById(clienteId)){
-            return ResponseEntity.notFound().build();
-        }
+		clienteService.excluir(clienteId);
 
-        clienteService.excluir(clienteId);
-
-        return ResponseEntity.noContent().build();
-    }
+		return ResponseEntity.noContent().build();
+	}
 }
