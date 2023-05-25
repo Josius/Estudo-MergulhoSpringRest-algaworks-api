@@ -17,7 +17,14 @@ import lombok.AllArgsConstructor;
 public class ClienteService {
     
     private ClienteRepository clienteRepository;
-
+    
+    @Transactional
+    public List<Cliente> buscarTodosOsClientes(){
+        
+        return clienteRepository.findAll();
+    }
+    
+    
     public Cliente buscarCliente(Long clienteId){
         return clienteRepository.findById(clienteId)
         .orElseThrow(() -> new NegocioException("Cliente não encontrado!"));
@@ -41,11 +48,6 @@ public class ClienteService {
         clienteRepository.deleteById(clientId);
     }
 
-    @Transactional
-    public List<Cliente> buscarTodosOsClientes(){
-        
-        return clienteRepository.findAll();
-    }
     
     @Transactional
     public Optional<Cliente> buscarUmClientePorId(Long clienteId){
